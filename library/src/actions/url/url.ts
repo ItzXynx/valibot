@@ -96,14 +96,13 @@ export function url(
     async: false,
     expects: null,
     requirement(input) {
+      // `URL.canParse` has been widely available across browsers since December 2023,
+      // but the library targets ES2020. Feature-detect it to avoid constructing a URL object.
+      // https://developer.mozilla.org/en-US/docs/Web/API/URL/canParse_static
+      if (typeof URL !== 'undefined' && typeof URL.canParse === 'function') {
+        return URL.canParse(input);
+      }
       try {
-        // `URL.canParse` has been widely available across browsers since December 2023,
-        // but the library targets ES2020. Feature-detect it to avoid constructing a URL object.
-        // https://developer.mozilla.org/en-US/docs/Web/API/URL/canParse_static
-        if (typeof URL.canParse === 'function') {
-          return URL.canParse(input);
-        }
-
         new URL(input);
         return true;
       } catch {
