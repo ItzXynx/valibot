@@ -63,7 +63,7 @@ export interface UrlAction<
 /**
  * Creates an [URL](https://en.wikipedia.org/wiki/URL) validation action.
  *
- * Hint: The value is passed to the URL constructor to check if it is valid.
+ * Hint: The value is checked with the [URL parser](https://developer.mozilla.org/en-US/docs/Web/API/URL/URL).
  * This check is not perfect. For example, values like "abc:1234" are accepted.
  *
  * @returns An URL action.
@@ -73,7 +73,7 @@ export function url<TInput extends string>(): UrlAction<TInput, undefined>;
 /**
  * Creates an [URL](https://en.wikipedia.org/wiki/URL) validation action.
  *
- * Hint: The value is passed to the URL constructor to check if it is valid.
+ * Hint: The value is checked with the [URL parser](https://developer.mozilla.org/en-US/docs/Web/API/URL/URL).
  * This check is not perfect. For example, values like "abc:1234" are accepted.
  *
  * @param message The error message.
@@ -96,6 +96,12 @@ export function url(
     async: false,
     expects: null,
     requirement(input) {
+      // `URL.canParse` has been widely available across browsers since December 2023,
+      // but the library targets ES2020. Feature-detect it to avoid constructing a URL object.
+      // https://developer.mozilla.org/en-US/docs/Web/API/URL/canParse_static
+      if (typeof URL.canParse === 'function') {
+        return URL.canParse(input);
+      }
       try {
         new URL(input);
         return true;
