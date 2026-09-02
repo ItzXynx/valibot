@@ -3,7 +3,7 @@ import * as v from '../../../../library/src/index.ts';
 
 /**
  * Creates a representative product schema.
- * @returns {object} A representative product schema.
+ * @returns A representative product schema.
  */
 function createProductSchema(): v.GenericSchema {
   const imageSchema = v.object({
@@ -117,8 +117,10 @@ describe('assert', () => {
   bench('invalid input', () => {
     try {
       v.assert(schema, invalidInput);
-    } catch {
-      // Expected ValiError.
+    } catch (error) {
+      if (!v.isValiError(error)) {
+        throw error;
+      }
     }
   });
 });
@@ -139,8 +141,10 @@ describe('parse', () => {
   bench('invalid input', () => {
     try {
       v.parse(schema, invalidInput);
-    } catch {
-      // Expected ValiError.
+    } catch (error) {
+      if (!v.isValiError(error)) {
+        throw error;
+      }
     }
   });
 });
