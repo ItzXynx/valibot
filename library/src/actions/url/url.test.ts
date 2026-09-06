@@ -79,7 +79,7 @@ describe('url', () => {
       try {
         expect(Reflect.deleteProperty(globalThis, 'URL')).toBe(true);
         const action = url();
-        expect(() => action.requirement('https://example.com')).not.toThrow();
+        expect(action.requirement('https://example.com')).toBe(false);
       } finally {
         Object.defineProperty(globalThis, 'URL', urlDescriptor);
       }
