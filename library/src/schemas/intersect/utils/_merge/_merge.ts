@@ -44,7 +44,12 @@ export function _merge(value1: unknown, value2: unknown): MergeDataset {
       for (const key in value2) {
         if (!Object.prototype.hasOwnProperty.call(value2, key)) continue;
         // Skip dangerous keys to prevent prototype pollution
-        if (key === '__proto__' || key === 'constructor' || key === 'prototype') continue;
+        if (
+          key === '__proto__' ||
+          key === 'constructor' ||
+          key === 'prototype'
+        )
+          continue;
         if (Object.prototype.hasOwnProperty.call(value1, key)) {
           // @ts-expect-error
           const dataset = _merge(value1[key], value2[key]);
