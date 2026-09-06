@@ -50,6 +50,6 @@ pnpm bench:compare url --testNamePattern='invalid'
 The baseline is saved to the ignored local file `baseline.json`. Recreate it
 after moving or renaming benchmark files.
 
-CI runs the `representative` benchmark comparison automatically for every pull
-request as a required check. Focused workloads remain available for local
-investigation.
+CI runs the `representative` benchmark comparison automatically for pull
+requests that change `library/` as a required check. Focused workloads remain
+available for local investigation.
