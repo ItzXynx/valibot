@@ -38,18 +38,16 @@ export function _merge(value1: unknown, value2: unknown): MergeDataset {
       value1.constructor === Object &&
       value2.constructor === Object
     ) {
-      const nextValue = { ...value1 };
+      let nextValue = { ...value1 };
 
-      // Deeply merge entries of `value2` into `nextValue`
-      for (const key in value2) {
-        if (!Object.prototype.hasOwnProperty.call(value2, key)) continue;
-        // Skip dangerous keys to prevent prototype pollution
-        if (
-          key === '__proto__' ||
-          key === 'constructor' ||
-          key === 'prototype'
-        )
-          continue;
+      // Deeply merge own entries of `value2` into `nextValue`
+      for (const key of Object.keys(value2)) {
+        // Hint: Create an own data property before assigning `__proto__` to
+        // avoid invoking its inherited setter. Other keys need no extra copy.
+        if (key === '__proto__') {
+          nextValue = { ...nextValue, [key]: undefined };
+        }
+
         if (Object.prototype.hasOwnProperty.call(value1, key)) {
           // @ts-expect-error
           const dataset = _merge(value1[key], value2[key]);
@@ -60,22 +58,13 @@ export function _merge(value1: unknown, value2: unknown): MergeDataset {
           }
 
           // Otherwise, replace merged entry
-          Object.defineProperty(nextValue, key, {
-            value: dataset.value,
-            writable: true,
-            enumerable: true,
-            configurable: true,
-          });
+          // @ts-expect-error
+          nextValue[key] = dataset.value;
 
           // Otherwise, just add entry
         } else {
-          Object.defineProperty(nextValue, key, {
-            // @ts-expect-error
-            value: value2[key],
-            writable: true,
-            enumerable: true,
-            configurable: true,
-          });
+          // @ts-expect-error
+          nextValue[key] = value2[key];
         }
       }
 
