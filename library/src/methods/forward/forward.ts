@@ -69,7 +69,7 @@ export function forward<
               }
 
               // If path value is undefined, stop forwarding
-              if (!pathValue) {
+              if (pathValue === undefined) {
                 break;
               }
 
