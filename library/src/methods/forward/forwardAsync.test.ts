@@ -201,7 +201,7 @@ describe('forwardAsync', () => {
 
   test('should stop forwarding if path input is null', async () => {
     const input = { nested: null };
-    type Input = { nested: null };
+    interface Input { nested: null }
     const requirement = () => false;
     expect(
       await forwardAsync<Input, CheckIssue<Input>, ['nested', 'key']>(
@@ -240,7 +240,7 @@ describe('forwardAsync', () => {
 
   test('should not stop forwarding if intermediate value is 0', async () => {
     const input = { count: 0 };
-    type Input = { count: number };
+    interface Input { count: number }
     const requirement = () => false;
     expect(
       await forwardAsync<Input, CheckIssue<Input>, ['count']>(

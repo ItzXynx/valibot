@@ -204,7 +204,7 @@ describe('forward', () => {
 
   test('should stop forwarding if path input is null', () => {
     const input = { nested: null };
-    type Input = { nested: null };
+    interface Input { nested: null }
     const requirement = () => false;
     expect(
       forward<Input, CheckIssue<Input>, ['nested', 'key']>(
@@ -243,7 +243,7 @@ describe('forward', () => {
 
   test('should not stop forwarding if intermediate value is 0', () => {
     const input = { count: 0 };
-    type Input = { count: number };
+    interface Input { count: number }
     const requirement = () => false;
     expect(
       forward<Input, CheckIssue<Input>, ['count']>(
