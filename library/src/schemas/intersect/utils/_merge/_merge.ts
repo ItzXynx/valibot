@@ -43,8 +43,14 @@ export function _merge(value1: unknown, value2: unknown): MergeDataset {
       const nextValue = { ...value1, ...value2 };
 
       // Deeply merge shared entries into `nextValue`
-      for (const key of Object.keys(value2)) {
-        if (Object.prototype.hasOwnProperty.call(value1, key)) {
+      // Hint: for...in avoids allocating a keys array.
+      for (const key in value2) {
+        // Hint: Check value1 first to skip non-shared keys early. The second
+        // check prevents inherited value2 entries from being merged.
+        if (
+          Object.prototype.hasOwnProperty.call(value1, key) &&
+          Object.prototype.hasOwnProperty.call(value2, key)
+        ) {
           // @ts-expect-error
           const dataset = _merge(value1[key], value2[key]);
 
