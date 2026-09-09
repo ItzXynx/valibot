@@ -13,6 +13,7 @@ All notable changes to the library will be documented in this file.
 - Fix `intersect` schema to merge matching `NaN` values and invalid dates (pull request #1573)
 - Fix `cache` and `cacheAsync` methods to clone the issues of a cached dataset, preventing parent schemas from adding their path item to the same issue on every cache hit (pull request #1620)
 - Fix `strictObject`, `looseObject`, `objectWithRest` and their async variants to correctly handle unknown input keys that collide with `Object.prototype` members (pull request #1523)
+- Fix `ulid` action to reject ULIDs that exceed the maximum 128-bit value (pull request #1498)
 - Fix `email` action to reject non-ASCII characters accepted by Unicode case folding (pull request #1075)
 
 ## v1.4.2 (June 28, 2026)
