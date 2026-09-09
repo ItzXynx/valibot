@@ -35,8 +35,8 @@ export function _merge(value1: unknown, value2: unknown): MergeDataset {
     if (
       value1 &&
       value2 &&
-      value1.constructor === Object &&
-      value2.constructor === Object
+      Object.getPrototypeOf(value1) === Object.prototype &&
+      Object.getPrototypeOf(value2) === Object.prototype
     ) {
       let nextValue = { ...value1 };
 
