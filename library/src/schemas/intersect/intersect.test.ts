@@ -73,6 +73,7 @@ describe('intersect', () => {
       expect(dataset).toStrictEqual({ typed: true, value: input });
       expect(Object.getPrototypeOf(dataset.value)).toBe(Object.prototype);
       expect(dataset.value).not.toHaveProperty('admin');
+      expect(Object.getPrototypeOf(input)).toBe(Object.prototype);
     });
 
     test('for declared prototype entries', () => {

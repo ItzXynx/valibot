@@ -35,19 +35,15 @@ export function _merge(value1: unknown, value2: unknown): MergeDataset {
     if (
       value1 &&
       value2 &&
-      Object.getPrototypeOf(value1) === Object.prototype &&
-      Object.getPrototypeOf(value2) === Object.prototype
+      value1.constructor === Object &&
+      value2.constructor === Object
     ) {
-      let nextValue = { ...value1 };
+      // Hint: Spreading both values creates own data properties without
+      // invoking inherited setters.
+      const nextValue = { ...value1, ...value2 };
 
-      // Deeply merge own entries of `value2` into `nextValue`
+      // Deeply merge shared entries into `nextValue`
       for (const key of Object.keys(value2)) {
-        // Hint: Create an own data property before assigning `__proto__` to
-        // avoid invoking its inherited setter. Other keys need no extra copy.
-        if (key === '__proto__') {
-          nextValue = { ...nextValue, [key]: undefined };
-        }
-
         if (Object.prototype.hasOwnProperty.call(value1, key)) {
           // @ts-expect-error
           const dataset = _merge(value1[key], value2[key]);
@@ -60,11 +56,6 @@ export function _merge(value1: unknown, value2: unknown): MergeDataset {
           // Otherwise, replace merged entry
           // @ts-expect-error
           nextValue[key] = dataset.value;
-
-          // Otherwise, just add entry
-        } else {
-          // @ts-expect-error
-          nextValue[key] = value2[key];
         }
       }
 

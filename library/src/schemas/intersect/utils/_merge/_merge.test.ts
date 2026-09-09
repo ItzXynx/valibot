@@ -102,7 +102,7 @@ describe('_merge', () => {
       });
     });
 
-    test('without reading shared getters of second input more than once', () => {
+    test('for objects with shared getters', () => {
       let reads = 0;
       const value2 = {
         get key() {
@@ -111,7 +111,40 @@ describe('_merge', () => {
         },
       };
       expect(_merge({ key: 1 }, value2)).toStrictEqual({ value: { key: 1 } });
-      expect(reads).toBe(1);
+      expect(reads).toBe(2);
+    });
+
+    test('without invoking inherited setters', () => {
+      let calls = 0;
+      let result;
+      try {
+        Object.defineProperty(Object.prototype, 'inheritedSetter', {
+          set() {
+            calls++;
+          },
+          configurable: true,
+        });
+        result = _merge({}, { inheritedSetter: 'foo' });
+      } finally {
+        Reflect.deleteProperty(Object.prototype, 'inheritedSetter');
+      }
+      expect(result).toStrictEqual({ value: { inheritedSetter: 'foo' } });
+      expect(calls).toBe(0);
+    });
+
+    test('for keys colliding with inherited non-writable properties', () => {
+      let result;
+      try {
+        Object.defineProperty(Object.prototype, 'inheritedReadonly', {
+          value: 'bar',
+          writable: false,
+          configurable: true,
+        });
+        result = _merge({}, { inheritedReadonly: 'foo' });
+      } finally {
+        Reflect.deleteProperty(Object.prototype, 'inheritedReadonly');
+      }
+      expect(result).toStrictEqual({ value: { inheritedReadonly: 'foo' } });
     });
 
     test.each([
