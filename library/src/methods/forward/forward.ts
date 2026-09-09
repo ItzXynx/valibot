@@ -68,8 +68,8 @@ export function forward<
                 issue.path = [pathItem];
               }
 
-              // If path value is undefined, stop forwarding
-              if (pathValue === undefined) {
+              // If path value is nullish, stop forwarding
+              if (pathValue === undefined || pathValue === null) {
                 break;
               }
 
