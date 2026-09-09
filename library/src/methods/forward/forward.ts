@@ -49,7 +49,7 @@ export function forward<
             for (const key of path) {
               // Create path value variable
               // @ts-expect-error
-              const pathValue: unknown = pathInput[key];
+              const pathValue: unknown = pathInput != null ? pathInput[key] : undefined;
 
               // Create path item for current key
               const pathItem: IssuePathItem = {
